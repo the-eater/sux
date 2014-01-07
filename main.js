@@ -17,7 +17,7 @@ var spawn = require('child_process').spawn,
     };
 Sux.prototype = Object.create(events.EventEmitter.prototype);
 
-Sux.prototype.start = function(what) {
+Sux.prototype.start = function() {
     var sux = this;
     this._exc = spawn(this.soxPath || Sux.soxPath, this.buildArguments());
     this._exc.on('error', function(err) {
@@ -32,7 +32,6 @@ Sux.prototype.start = function(what) {
             sux.emit('error', str.substr(9));
         }
     });
-    return what && what == 'in' ? this. in () : this.out();
 };
 
 Sux.prototype. in = function() {
@@ -65,7 +64,6 @@ Sux.prototype.buildArguments = function() {
     })
     args = args.concat(opt.rawArg || []);
     args.push(this.options.output);
-    console.log('Args:', args);
     return args;
 };
 
