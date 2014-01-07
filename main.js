@@ -11,13 +11,13 @@ var spawn = require('child_process').spawn,
         for (var key in options) {
             this.options[key] = options[key];
         }
-        if (!options.input) {
-            throw new Error("Missing input");
+        if (!options.input && !options.inputtype) {
+            throw new Error("Missing input or inputtype");
         }
     };
 Sux.prototype = Object.create(events.EventEmitter.prototype);
 
-Sux.prototype.start = function() {
+Sux.prototype.start = function(what) {
     var sux = this;
     this._exc = spawn(this.soxPath || Sux.soxPath, this.buildArguments());
     this._exc.on('error', function(err) {
@@ -32,8 +32,20 @@ Sux.prototype.start = function() {
             sux.emit('error', str.substr(9));
         }
     });
-    return this.options.output == '-' ? this._exc.stdout : null;
+    return what && what == 'in' ? this. in () : this.out();
 };
+
+Sux.prototype. in = function() {
+    if (this._exc)
+        return this._exc.stdin;
+    return null;
+}
+
+Sux.prototype.out = function() {
+    if (this._exc)
+        return this._exc.stdout;
+    return null;
+}
 
 Sux.argMap = {
     'channels': '-c',
@@ -44,7 +56,7 @@ Sux.argMap = {
 
 Sux.prototype.buildArguments = function() {
     var opt = this.options;
-    var args = [this.options.input];
+    var args = opt.input ? [opt.input] : ['-t', opt.inputtype, '-'];
     Object.keys(Sux.argMap).forEach(function(name) {
         if (opt[name] && !(name == 'depth' && opt.type == 'mp3')) {
             args.push(Sux.argMap[name]);
