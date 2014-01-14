@@ -11,7 +11,7 @@ var spawn = require('child_process').spawn,
         for (var key in options) {
             this.options[key] = options[key];
         }
-        if (!options.input && !options.inputtype) {
+        if (!options.input) {
             throw new Error("Missing input or inputtype");
         }
     };
@@ -32,6 +32,14 @@ Sux.prototype.start = function() {
             sux.emit('error', str.substr(9));
         }
     });
+    if (this.options.input.readable) {
+        this.options.input.pipe(this. in ());
+    } else if (this.options.input.source.readable) {
+        this.options.input.source.pipe(this. in ())
+    }
+    if (this.options.output.writeable) {
+        this.out().pipe(this.options.output)
+    }
 };
 
 Sux.prototype. in = function() {
@@ -50,23 +58,31 @@ Sux.argMap = {
     'channels': '-c',
     'depth': '-b',
     'rate': '-r',
-    'type': '-t'
+    'type': '-t',
+    'bitrate': '-C'
 };
 
-Sux.prototype.buildArguments = function() {
-    var opt = this.options;
-    var args = opt.input ? [opt.input] : ['-t', opt.inputtype, '-'];
+Sux.buildIOArguments = function(opt, source) {
+    var args = [];
     Object.keys(Sux.argMap).forEach(function(name) {
         if (opt[name] && !(name == 'depth' && opt.type == 'mp3')) {
             args.push(Sux.argMap[name]);
             args.push(opt[name]);
         }
-    })
+    });
+    if (source || opt.source) args.push(source || ((opt.source && opt.source.readable) ? '-' : opt.source));
+    return args;
+}
+
+Sux.prototype.buildArguments = function() {
+    var opt = this.options;
+    var args = typeof(opt.input) == 'object' ? Sux.buildIOArguments(opt.input) : [opt.input.readable ? '-' : opt.input];
+    args = args.concat(Sux.buildIOArguments(opt))
     args = args.concat(opt.rawArg || []);
-    args.push(this.options.output);
+    args.push(this.options.output.writeable ? '-' : this.options.output);
     return args;
 };
 
-Sux.soxPath = "sox";
+Sux.soxPath = process.platform == 'win32' ? __dirname + '\\win_libs\\sox.exe' : "sox";
 
 module.exports = Sux;

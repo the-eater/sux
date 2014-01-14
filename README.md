@@ -42,7 +42,16 @@ var Sux = require('sux'),
 		// input file (a file has higher priority then a stream)
 		// input: './test.mp3',
 		// if using a input stream define here what file type is streamed in
-		inputtype:'wav'
+		input: {
+			// input source, can be a file or - which will indicate we need to read from the stream
+			source:'-',
+			// input type
+			type:'wav',
+			// amount of input channels
+			channels:1,
+			// sample rate
+			rate:22050
+		}
 	});
 // starts SoX with given options
 sux.start();
