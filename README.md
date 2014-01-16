@@ -78,23 +78,23 @@ arguments map, translates 'type' to '-t' etc.
 ## `new Sux(opt)`
 
 Sux constructor
-```javascript
+```
 opt = {  
-	`type`: file type f.x. "mp3"
-	`rate`:samplerate  
-	`channels`:amount of channels  
-	`depth`: bitdepth  
-	`int`: signedness (needs to be "signed" or "unsigned", for RAW),  
-	`bitrate`: bitrate (for MP3's)  
-	`output`: filename, '-' or stream
-	`input`: {  
-		`type`: file type f.x. "mp3"  
-		`rate`:samplerate  
-		`channels`:amount of channels  
-		`depth`: bitdepth  
-		`int`: signedness (needs to be "signed" or "unsigned", for RAW),  
-		`bitrate`: bitrate (for MP3's)  
-		`source`:filename, '-' or stream  
+	type: file type f.x. "mp3"
+	rate:samplerate  
+	channels:amount of channels  
+	depth: bitdepth  
+	int: signedness (needs to be "signed" or "unsigned", for RAW),  
+	bitrate: bitrate (for MP3's)  
+	output: filename, '-' or stream
+	input: {  
+		type: file type f.x. "mp3"  
+		rate:samplerate  
+		channels:amount of channels  
+		depth: bitdepth  
+		int: signedness (needs to be "signed" or "unsigned", for RAW),  
+		bitrate: bitrate (for MP3's)  
+		source:filename, '-' or stream  
 	},filename or '-'
 }  
 ```
