@@ -12,7 +12,7 @@ var spawn = require('child_process').spawn,
             this.options[key] = options[key];
         }
         if (!options.input) {
-            throw new Error("Missing input or inputtype");
+            throw new Error("Missing input");
         }
     };
 Sux.prototype = Object.create(events.EventEmitter.prototype);
@@ -34,10 +34,10 @@ Sux.prototype.start = function() {
     });
     if (this.options.input.readable) {
         this.options.input.pipe(this. in ());
-    } else if (this.options.input.source.readable) {
+    } else if (this.options.input.source && this.options.input.source.readable) {
         this.options.input.source.pipe(this. in ())
     }
-    if (this.options.output.writeable) {
+    if (this.options.output.writable) {
         this.out().pipe(this.options.output)
     }
 };
@@ -54,12 +54,19 @@ Sux.prototype.out = function() {
     return null;
 }
 
+Sux.prototype.err = function() {
+    if (this._exc)
+        return this._exc.stderr;
+    return null;
+}
+
 Sux.argMap = {
     'channels': '-c',
     'depth': '-b',
     'rate': '-r',
     'type': '-t',
-    'bitrate': '-C'
+    'bitrate': '-C',
+    'int': '-e'
 };
 
 Sux.buildIOArguments = function(opt, source) {
@@ -76,10 +83,10 @@ Sux.buildIOArguments = function(opt, source) {
 
 Sux.prototype.buildArguments = function() {
     var opt = this.options;
-    var args = typeof(opt.input) == 'object' ? Sux.buildIOArguments(opt.input) : [opt.input.readable ? '-' : opt.input];
+    var args = typeof(opt.input) == 'object' && !opt.input.readable ? Sux.buildIOArguments(opt.input) : [opt.input.readable ? '-' : opt.input];
     args = args.concat(Sux.buildIOArguments(opt))
     args = args.concat(opt.rawArg || []);
-    args.push(this.options.output.writeable ? '-' : this.options.output);
+    args.push(this.options.output.writable ? '-' : this.options.output);
     return args;
 };
 
